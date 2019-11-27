@@ -8,5 +8,7 @@
 #   descriçao
 
 # todo
-# /sercretariado
+# /secretariado
 # /secretariado/<id>
+
+# app port = 7000

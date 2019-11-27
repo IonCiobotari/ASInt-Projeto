@@ -19,23 +19,29 @@ app = Flask(__name__)
 def canteen_week():
     #/canteen?day=dd/mm/yyyy para saber menu da semana do dia dd/mm/yyyy
     #/canteen retorna o menu da semana atual
-    r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
+    try:
+        r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
+    except requests.exceptions.InvalidURL:
+        return jsonify("Fenix service is down")
     print(r.status_code)
     data = r.json()
     print(data)
-    return str(data)
+    return jsonify(str(r.json()))
 
 #dia tem de estar em dd-mm-yyyy
 @app.route('/canteen/<day>')
-def canteed_day(day):
+def canteen_day(day):
     day = day.replace("-", "/")
     print(day)
-    r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen?day="+day)
+    try:
+        r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen?day="+day)
+    except requests.exceptions.InvalidURL:
+        return jsonify("Fenix service is down")
     print(r.status_code)
     data = r.json()
     print(data)
-    return str(data)
+    return jsonify(str(r.json()))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
 

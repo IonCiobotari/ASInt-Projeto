@@ -1,0 +1,1 @@
+# le logs e edita informaçao dos servicos
