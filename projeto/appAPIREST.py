@@ -8,6 +8,8 @@ URL_canteen = "http://127.0.0.1:5000/"
 URL_rooms = "http://127.0.0.1:6000/"
 URL_services = "http://127.0.0.1:7000/"
 
+URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services}
+
 @app.route('/')
 def hello_world():
     return jsonify("Use endpoint /API")    
@@ -16,7 +18,7 @@ def hello_world():
 def hello_world2():
     return jsonify("Available endpoints:\n\t/canteen\n\t/canteen/<ddmmyyyy>\n\t/rooms\n\t/rooms/<id>\n\t/rooms/<id>/<day>\n\t/services\n\t/services/<id>")
 
-@app.route('/API/canteen')
+#@app.route('/API/canteen')
 def show_canteen():
     try:
         r = requests.get(URL_canteen)
@@ -25,7 +27,7 @@ def show_canteen():
     # transform data?
     return r.json()
 
-@app.route('/API/canteen/<date>')
+#@app.route('/API/canteen/<date>')
 def show_canteen_day(date):
     try:
         r = requests.get(URL_canteen+"/"+date)
@@ -34,7 +36,7 @@ def show_canteen_day(date):
     # transform data?
     return r.json()
 
-@app.route('/API/rooms')
+#@app.route('/API/rooms')
 def show_salas():
     try:
         r = requests.get(URL_rooms)
@@ -43,7 +45,7 @@ def show_salas():
     # transform data?
     return r.json()
 
-@app.route('/API/rooms/<id>')
+#@app.route('/API/rooms/<id>')
 def show_salas_id(id):
     try:
         r = requests.get(URL_rooms+"/"+id)
@@ -52,7 +54,7 @@ def show_salas_id(id):
     # transform data?
     return r.json()
 
-@app.route('/API/rooms/<id>/<date>')
+#@app.route('/API/rooms/<id>/<date>')
 def show_salas_id_day(id, date):
     try:
         r = requests.get(URL_rooms+"/"+"id"+"/"+date)
@@ -61,7 +63,7 @@ def show_salas_id_day(id, date):
     # transform data?
     return r.json()
 
-@app.route('/API/services')
+#@app.route('/API/services')
 def show_secretariado():
     try:
         r = requests.get(URL_services)
@@ -70,7 +72,7 @@ def show_secretariado():
     # transform data?
     return r.json()
 
-@app.route('/API/services/<id>')
+#@app.route('/API/services/<id>')
 def show_secretariado_id(id):
     try:
         r = requests.get(URL_services+"/"+id)
@@ -86,7 +88,7 @@ def show_path_result(path):
         hello_world2()
     
     args = path.split("/")
-    r_url = args[0] + path
+    r_url = URL[args[0]] + path
 
     try:
         r = requests.get(r_url)
