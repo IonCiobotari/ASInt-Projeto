@@ -86,9 +86,7 @@ def show_path_result(path):
         hello_world2()
     
     args = path.split("/")
-    r_url = args[0]
-    for i in range(len(args)-1):
-        r_url += "/" + args[i+1]
+    r_url = args[0] + path
 
     try:
         r = requests.get(r_url)
