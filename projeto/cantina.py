@@ -37,10 +37,20 @@ def canteen_day(day):
         r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen?day="+day)
     except requests.exceptions.InvalidURL:
         return jsonify("Fenix service is down")
+
     print(r.status_code)
-    data = r.json()
-    print(data)
-    return jsonify(str(r.json()))
+    if int(r.status_code) != 200:
+        return jsonify("Invalid date")
+    else:
+        data = r.json()
+        print(data)
+
+        result = None
+        for i in range(len(data)):
+            if day in data[i].values():
+                result = data[i]
+                break
+        return jsonify(str(result))
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

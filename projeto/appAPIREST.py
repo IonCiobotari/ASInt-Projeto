@@ -10,13 +10,6 @@ URL_services = "http://127.0.0.1:7000/"
 
 URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services}
 
-@app.route('/')
-def hello_world():
-    return jsonify("Use endpoint /API")    
-
-@app.route('/API')
-def hello_world2():
-    return jsonify("Available endpoints:\n\t/canteen\n\t/canteen/<ddmmyyyy>\n\t/rooms\n\t/rooms/<id>\n\t/rooms/<id>/<day>\n\t/services\n\t/services/<id>")
 
 #@app.route('/API/canteen')
 def show_canteen():
@@ -84,11 +77,11 @@ def show_secretariado_id(id):
 
 @app.route('/API/<path:path>')
 def show_path_result(path):
-    if path == "":
-        hello_world2()
     
     args = path.split("/")
     r_url = URL[args[0]] + path
+
+    # decode path
 
     try:
         r = requests.get(r_url)
