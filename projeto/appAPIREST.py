@@ -75,19 +75,19 @@ def show_secretariado_id(id):
     return r.json()
 
 
-@app.route('/API/<path:path>')
-def show_path_result(path):
-    
-    args = path.split("/")
-    r_url = URL[args[0]] + path
+@app.route('/API/<serv>/<path:path>')
+def show_path_result(serv, path):
 
-    # decode path
-
-    try:
-        r = requests.get(r_url)
-        return r.json()
-    except requests.exceptions.InvalidURL:
-        return jsonify("Invalid URL")
+    if serv in URL:
+        r_url = URL[serv] + path
+        # decode path
+        try:
+            r = requests.get(r_url)
+            return r.json()
+        except requests.exceptions.InvalidURL:
+            return jsonify("Invalid URL")
+    else:
+        return jsonify("Invalid url")
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -28,9 +28,6 @@ import pickle
 app = Flask(__name__)
 DB = []
 
-#@app.route('/')
-#def main():
-
 def saveDB(DB):
     try:
         pickling=open("servicesDB.pickle", "rb")
