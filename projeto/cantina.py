@@ -38,7 +38,7 @@ def canteen_day(day):
     except requests.exceptions.InvalidURL:
         return jsonify("Fenix service is down")
 
-    print(r.status_code)
+    #print(r.status_code)
     if int(r.status_code) != 200:
         return jsonify("Invalid date")
     else:
