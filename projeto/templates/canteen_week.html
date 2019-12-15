@@ -6,12 +6,15 @@
 </head>
 <body>
 <h1>Current week information</h1>
+<table>
+    {% for key, value in result.items %}
+        <ul>
+            <th>{{key}}</th>
+            <td>{{value}}</td>
+        </ul>
+    {% endfor %}
+</table>
 
-{% for item in keys %}
-    <ul>
-            <li>{{item}}</li>
-    </ul>
-{% endfor %}
 
 <a href="/">Main</a>
 </body>

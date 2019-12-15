@@ -19,7 +19,7 @@ def canteen():
 def canteen_week():
     try:
         r = requests.get(APIurl+"canteen")
-        return render_template("canteen_week.html", keys = r.json())
+        return render_template("canteen_week.html", result = r.json())
     except requests.exceptions.ConnectionError:
         r = "ConnectionError"
         return render_template("error_manager.html")
