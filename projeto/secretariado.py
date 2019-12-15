@@ -30,7 +30,7 @@ DB = []
 
 def saveDB(DB):
     try:
-        pickling=open("servicesDB.pickle", "rb")
+        pickling=open("servicesDB.pickle", "wb+")
         pickle.dump(DB, pickling)
         pickling.close()
     except FileNotFoundError:

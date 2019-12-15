@@ -28,11 +28,9 @@ def canteen_week():
         try:
             r = requests.get(FENIX_CANTEEN_URL)
             save_CACHE(r.json())
+            data = CACHE
         except requests.exceptions.InvalidURL:
-            pass
-    
-    if r.status_code != 200:
-        data = r.status_code
+            data = r.status_code
     else:
         data = CACHE
 
@@ -54,17 +52,9 @@ def canteen_day(day):
                     data = {i['day']: i['meal']}
                     break
         except requests.exceptions.InvalidURL:
-            data = r.status_code
+            data = r
 
     return jsonify(data)
-
-#@app.route('/canteen/lunch') # return lunch for the current week
-
-
-#@app.route('/<path:path>')
-#def decode_path(path):
-
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

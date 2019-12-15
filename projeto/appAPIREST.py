@@ -4,30 +4,31 @@ import requests
 
 app = Flask(__name__)
 
-URL_canteen = "http://127.0.0.1:5000/canteen"
-URL_rooms = "http://127.0.0.1:6000/rooms"
-URL_services = "http://127.0.0.1:5100/services"
+URL_canteen = "http://127.0.0.1:5000/"
+URL_rooms = "http://127.0.0.1:5200/"
+URL_services = "http://127.0.0.1:5100/"
 
 URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services}
 
-@app.route('/API/<serv>/<path:path>')
-def show_path_result(serv, path):
-    print(serv)
-    print(path)
-    if serv in URL:
-        if path != "":
-            path = "/"+path
-        r_url = URL[serv] + path
-        print(r_url)
+@app.route('/API/<path:path>')
+def show_path_result(path):
+
+    url_args = path.split("/")
+
+    if url_args[0] in URL:
         # decode path
+        r_url = URL[url_args[0]] + path
+        print(r_url)
         try:
             r = requests.get(r_url)
-            print(r.json())
-            return r.json()
+           # print(r.json())
+            data = r.json()
         except requests.exceptions.InvalidURL:
-            return jsonify("Invalid URL")
+            data = "Invalid url"
     else:
-        return jsonify("Invalid url")
+        data = "Invalid url"
+
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True, port=6000)

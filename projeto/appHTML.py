@@ -5,10 +5,10 @@ import requests
 
 app = Flask(__name__)
 
-APIurl = "http://127.0.0.1:6000/"
+APIurl = "http://127.0.0.1:6000/API/"
 
 @app.route('/')
-def hello_world():
+def main_page():
     return render_template("mainPage.html")
 
 @app.route('/canteen')
@@ -24,11 +24,13 @@ def canteen_week():
         r = "ConnectionError"
         return render_template("error_manager.html")
 
-
-
 @app.route('/canteen_day')
 def canteen_day():
     pass
+
+#@app.errorhandler(404)
+#def error_not_found():
+   # return render_template("error_not_found.html")
 
 if __name__ == '__main__':
     app.run(debug = True, port=6100)
