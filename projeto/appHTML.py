@@ -74,9 +74,9 @@ def service_ID():
 def rooms():
     return render_template("mainPage.html")
 
-#@app.errorhandler(404)
-#def error_not_found():
-   # return render_template("error_not_found.html")
+@app.errorhandler(404)
+def error_not_found(error):
+    return render_template("error_not_found.html"), 404
 
 if __name__ == '__main__':
     app.run(debug = True, port=6100)
