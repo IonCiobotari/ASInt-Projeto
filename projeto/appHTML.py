@@ -80,3 +80,21 @@ def error_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug = True, port=6100)
+    
+    """
+    def jsontoHtml(json, h, html):
+    html = ""
+
+    if struct
+        for k in json.key:
+                html+="<h>"+jsontoHtml(json[k],h+1)+"</h>"
+
+    if array
+        html = " <h> "
+        for v in json:
+            html +=v
+    if valor
+        html = valor(json)
+        
+    return html
+"""

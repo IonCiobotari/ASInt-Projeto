@@ -13,10 +13,14 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
+import log
 import requests
+import logging.config
+
 
 app = Flask(__name__)
 
+app.logger = logging.getLogger('defaultLogger')
 #@app.route('/')
 #def main():
 
@@ -30,11 +34,14 @@ def salas_list():
     print(r.status_code)
     data = r.json()
     print(data)
+    app.logger.info('Processing default salas request')
     return jsonify(str(r.json()))
+
+
 
 #dia tem de estar em dd-mm-yyyy
 @app.route('/salas/<ID>')
-def canteen_day(day):
+def salas_ID(ID):
     print(ID)
     try:
         r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/spaces/"+ID)
@@ -43,11 +50,12 @@ def canteen_day(day):
     print(r.status_code)
     data = r.json()
     print(data)
+    app.logger.info('Processing salas request with ID = {}'.format(ID))
     return jsonify(str(r.json()))
 
 #dia tem de estar em dd-mm-yyyy
 @app.route('/salas/<ID>/<day>')
-def canteen_day(day):
+def salas_dayID(ID,day):
     day = day.replace("-", "/")
     print(day)
     try:
@@ -57,6 +65,7 @@ def canteen_day(day):
     print(r.status_code)
     data = r.json()
     print(data)
-    return jsonify(str(r.json()))
+    app.logger.info('Processing salas request with ID = {} and day = {}'.format(ID,day))
+    return jsonify(str(r.json()))#TODO return only ocupation for the currrent day and not for the current week like fenix API returns
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
