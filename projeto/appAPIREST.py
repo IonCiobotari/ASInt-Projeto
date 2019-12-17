@@ -10,7 +10,7 @@ URL_services = "http://127.0.0.1:5100/"
 
 URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services}
 
-@app.route('/API/<path:path>')
+@app.route('/API/<path:path>', methods = ['GET', 'PUT', 'POST'])
 def show_path_result(path):
 
     url_args = path.split("/")

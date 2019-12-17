@@ -7,7 +7,7 @@
 # /salas/<id>/<day>
 
 
-# app port = 6000
+# app port = 5200
 
 from flask import Flask
 from flask import render_template
@@ -24,7 +24,7 @@ app.logger = logging.getLogger('defaultLogger')
 #@app.route('/')
 #def main():
 
-@app.route('/salas')
+@app.route('/rooms')
 # menu da semana
 def salas_list():
     try:
@@ -34,13 +34,13 @@ def salas_list():
     print(r.status_code)
     data = r.json()
     print(data)
-    app.logger.info('Processing default salas request')
-    return jsonify(str(r.json()))
+    app.logger.info('{} - Processing default salas request'.format(request.remote_addr))
+    return jsonify(r.json())
 
 
 
 #dia tem de estar em dd-mm-yyyy
-@app.route('/salas/<ID>')
+@app.route('/rooms/<ID>')
 def salas_ID(ID):
     print(ID)
     try:
@@ -50,11 +50,11 @@ def salas_ID(ID):
     print(r.status_code)
     data = r.json()
     print(data)
-    app.logger.info('Processing salas request with ID = {}'.format(ID))
-    return jsonify(str(r.json()))
+    app.logger.info('{} - Processing salas request with ID = {}'.format(request.remote_addr,ID))
+    return jsonify(r.json())
 
 #dia tem de estar em dd-mm-yyyy
-@app.route('/salas/<ID>/<day>')
+@app.route('/rooms/<ID>/<day>')
 def salas_dayID(ID,day):
     day = day.replace("-", "/")
     print(day)
@@ -65,7 +65,9 @@ def salas_dayID(ID,day):
     print(r.status_code)
     data = r.json()
     print(data)
-    app.logger.info('Processing salas request with ID = {} and day = {}'.format(ID,day))
-    return jsonify(str(r.json()))#TODO return only ocupation for the currrent day and not for the current week like fenix API returns
+    app.logger.info('{} - Processing salas request with ID = {} and day = {}'.format(request.remote_addr,ID,day))
+    return jsonify(r.json())#TODO return only ocupation for the currrent day and not for the current week like fenix API returns
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5200)

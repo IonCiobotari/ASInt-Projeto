@@ -47,7 +47,7 @@ def services():
         else:
             return jsonify(DB)
     elif request.method == 'POST':
-        app.logger.info('POST request on default services handler')
+        app.logger.info('{} - POST request on default services handler : {}'.format(request.remote_addr,request.json))
         service = {
             'ID': len(DB),
             'location': request.json['location'],
@@ -64,11 +64,11 @@ def services():
 @app.route('/services/<int:id>', methods = ['GET', 'PUT'])
 def service_id(id):
     if request.method == 'GET':
-        app.logger.info('GET request on service handler for ID {}'.format(id))
+        app.logger.info('{} - GET request on service handler for ID {}'.format(request.remote_addr,id))
         if DB == []:
             return jsonify("No services available")
     elif request.method == 'PUT':
-        app.logger.info('PUT request on service handler for ID {}'.format(id))
+        app.logger.info('{} - PUT request on service handler for ID {} : {}'.format(request.remote_addr,id,request.json))
         if 'location' in request.json:
             DB[id]['location'] = request.json['location']
         elif 'hours' in request.json:
