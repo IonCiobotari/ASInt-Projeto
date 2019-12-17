@@ -4,7 +4,7 @@ from collections import Counter
 from flask import request
 from flask import jsonify
 
-file = open(r"lusiadas.txt", "r", encoding="utf-8-sig")
+file = open("lusiadas.txt", "r", encoding="utf-8-sig")
 wordcount = Counter(file.read().split())
 app = Flask(__name__)
 

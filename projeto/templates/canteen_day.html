@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CanteenDay</title>
+</head>
+<body>
+<h1>Day information</h1>
+<table>
+    {% for key, value in result.items %}
+        <ul>
+            <th>{{key}}</th>
+            <td>{{value}}</td>
+        </ul>
+    {% endfor %}
+</table>
+
+
+<a href="/">Main</a>
+</body>
+</html>

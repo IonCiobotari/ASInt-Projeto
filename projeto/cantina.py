@@ -1,56 +1,60 @@
-# utilizar GET
-
-# considerar implementar uma cache
-
-
 from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
 import requests
+import datetime
 
 app = Flask(__name__)
 
-#@app.route('/')
-#def main():
+FENIX_CANTEEN_URL = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen"
+CACHE = {}
 
-@app.route('/canteen')
-# menu da semana
+# save new cache information
+def save_CACHE(data):
+    global CACHE
+
+    CACHE = {}
+    for i in data:
+        CACHE[i['day']] = i['meal']
+
+
+@app.route('/canteen') # Returns lunch and dinner for the current week
 def canteen_week():
-    #/canteen?day=dd/mm/yyyy para saber menu da semana do dia dd/mm/yyyy
-    #/canteen retorna o menu da semana atual
-    try:
-        r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen")
-    except requests.exceptions.InvalidURL:
-        return jsonify("Fenix service is down")
-    print(r.status_code)
-    data = r.json()
-    print(data)
-    return jsonify(str(r.json()))
+    global CACHE
 
-#dia tem de estar em dd-mm-yyyy
-@app.route('/canteen/<day>')
-def canteen_day(day):
-    day = day.replace("-", "/")
-    print(day)
-    try:
-        r = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen?day="+day)
-    except requests.exceptions.InvalidURL:
-        return jsonify("Fenix service is down")
-
-    print(r.status_code)
-    if int(r.status_code) != 200:
-        return jsonify("Invalid date")
+    today = datetime.datetime.today().strftime('%d/%m/%y')
+    if today not in CACHE.keys():
+        try:
+            r = requests.get(FENIX_CANTEEN_URL)
+            save_CACHE(r.json())
+            data = CACHE
+        except requests.exceptions.InvalidURL:
+            data = r.status_code
     else:
-        data = r.json()
-        print(data)
+        data = CACHE
 
-        result = None
-        for i in range(len(data)):
-            if day in data[i].values():
-                result = data[i]
-                break
-        return jsonify(str(result))
+    return jsonify(data)
+
+@app.route('/canteen/<day>') # return lunch and dinner for a given day
+def canteen_day(day):
+    global CACHE
+    
+    day = day.replace("-", "/") # day must come with dd-mm-yyyy format
+    if day in CACHE:
+        data = CACHE[day]
+    else:
+        try:
+            r = requests.get(FENIX_CANTEEN_URL + "?day="+day)
+            data = 404
+            for i in r.json():
+                if day in i.values():
+                    data = {i['day']: i['meal']}
+                    break
+        except requests.exceptions.InvalidURL:
+            data = r
+
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

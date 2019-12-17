@@ -28,12 +28,9 @@ import pickle
 app = Flask(__name__)
 DB = []
 
-#@app.route('/')
-#def main():
-
 def saveDB(DB):
     try:
-        pickling=open("servicesDB.pickle", "rb")
+        pickling=open("servicesDB.pickle", "wb+")
         pickle.dump(DB, pickling)
         pickling.close()
     except FileNotFoundError:
