@@ -10,11 +10,6 @@ logging.config.fileConfig('logging.cfg')
 app.logger = logging.getLogger('defaultLogger')
 
 '''
-@app.route('/')
-def hello_world():
-    app.logger.info('Processing default request')
-    return 'Hello World!'
-
 @app.route('/log', methods=['Post'])
 def logText():
     #/canteen?day=dd/mm/yyyy para saber menu da semana do dia dd/mm/yyyy

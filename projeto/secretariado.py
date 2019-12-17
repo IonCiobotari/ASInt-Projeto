@@ -25,6 +25,8 @@ from flask import jsonify
 import requests
 import pickle
 import logging.config
+import log
+import os
 
 app = Flask(__name__)
 app.logger = logging.getLogger('defaultLogger')
@@ -32,7 +34,10 @@ DB = []
 
 def saveDB(DB):
     try:
-        pickling=open("servicesDB.pickle", "wb+")
+        script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
+        rel_path = "Pickles/servicesDB.pickle"
+        abs_file_path = os.path.join(script_dir, rel_path)
+        pickling = open(abs_file_path, "rb+")
         pickle.dump(DB, pickling)
         pickling.close()
     except FileNotFoundError:
@@ -47,7 +52,7 @@ def services():
         else:
             return jsonify(DB)
     elif request.method == 'POST':
-        app.logger.info('{} - POST request on default services handler : {}'.format(request.remote_addr,request.json))
+        app.logger.info('POST request on default services handler')
         service = {
             'ID': len(DB),
             'location': request.json['location'],
@@ -64,11 +69,11 @@ def services():
 @app.route('/services/<int:id>', methods = ['GET', 'PUT'])
 def service_id(id):
     if request.method == 'GET':
-        app.logger.info('{} - GET request on service handler for ID {}'.format(request.remote_addr,id))
+        app.logger.info('GET request on service handler for ID {}'.format(id))
         if DB == []:
             return jsonify("No services available")
     elif request.method == 'PUT':
-        app.logger.info('{} - PUT request on service handler for ID {} : {}'.format(request.remote_addr,id,request.json))
+        app.logger.info('PUT request on service handler for ID {}'.format(id))
         if 'location' in request.json:
             DB[id]['location'] = request.json['location']
         elif 'hours' in request.json:
@@ -88,7 +93,10 @@ def service_id(id):
 
 if __name__ == "__main__":
     try:
-        pickling = open("servicesDB.pickle", "rb+")
+        script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
+        rel_path = "Pickles/servicesDB.pickle"
+        abs_file_path = os.path.join(script_dir, rel_path)
+        pickling = open(abs_file_path, "rb+")
         DB = pickle.load(pickling)
         pickling.close()
     except FileNotFoundError:
