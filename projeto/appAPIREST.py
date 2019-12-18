@@ -35,6 +35,8 @@ def show_path_result(path):
         except requests.exceptions.InvalidURL:
             data = "Invalid url"
         except requests.exceptions.ConnectionError:
+            data = "Connection error"
+        except requests.exceptions.ConnectionError:
             data = "Connection Error"
     else:
         data = "Invalid url"
