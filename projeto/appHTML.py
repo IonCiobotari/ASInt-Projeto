@@ -3,9 +3,11 @@ from flask import render_template
 from flask import request
 from flask import Markup
 from json2html import *
+import json
 import requests
 import log
 import logging.config
+import os
 
 app = Flask(__name__)
 app.logger = logging.getLogger('defaultLogger')
@@ -22,12 +24,26 @@ def default_page(path):
     return render_template("default.html", result = data)
 
 
-@app.route('/serviceAdmin',methods = ['POST'])
-def changeService():
-    r = requests.get(APIurl+"services/")
+@app.route('/serviceAdmin',methods = ['GET'])
+def AdminService():
+    r = requests.get(APIurl+"services")
+    j = json.loads(r.text)
+    #TODO if admin allowed
     #TODO generate list of available IDs and put them on the page
+    to_add = ""
+    for i in j:
+        to_add+='<option value ="{}" \>{}</option>\n'.format(i['ID'],i['ID'])
+    return render_template("servicesAdmin.html", Options = Markup(to_add))
 
-    render_template("error_manager.html", Options = Markup(subs))
+@app.route('/serviceChange',methods = ['POST'])
+def changeService():
+    id = request.form['ID']
+    if id =='new':#Post
+        return render_template("postService.html", ID=Markup(''),Method = Markup('POST'))
+    else: #PUT
+        return render_template("postService.html", ID=Markup('/'+id),Method = Markup('PUT'))
+
+
 
 
 @app.errorhandler(404)
@@ -43,7 +59,6 @@ def loginAdmin():
     return "i didnt do it to em"
 
 if __name__ == '__main__':
-    global DB
     try:
         script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
         rel_path = "Pickles/admins.pickle"
