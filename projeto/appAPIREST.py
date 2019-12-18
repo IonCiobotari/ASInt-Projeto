@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import jsonify
+from flask import request
 import requests
 
 app = Flask(__name__)
@@ -20,11 +21,21 @@ def show_path_result(path):
         r_url = URL[url_args[0]] + path
         print(r_url)
         try:
-            r = requests.get(r_url)
-           # print(r.json())
-            data = r.json()
+            if request.method == 'GET':
+                r = requests.get(r_url)
+                data = r.json()
+            elif request.method == 'PUT':
+                data = request.json
+                r = requests.put(url = r_url, json = data)
+                data = r.status_code
+            elif request.method == 'POST':
+                data = request.json
+                r = requests.post(url = r_url, json = data)
+                data = r.status_code
         except requests.exceptions.InvalidURL:
             data = "Invalid url"
+        except requests.exceptions.ConnectionError:
+            data = "Connection Error"
     else:
         data = "Invalid url"
 

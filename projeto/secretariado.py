@@ -37,7 +37,7 @@ def saveDB(DB):
         script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
         rel_path = "Pickles/servicesDB.pickle"
         abs_file_path = os.path.join(script_dir, rel_path)
-        pickling = open(abs_file_path, "rb+")
+        pickling = open(abs_file_path, "wb+")
         pickle.dump(DB, pickling)
         pickling.close()
     except FileNotFoundError:
@@ -76,10 +76,15 @@ def service_id(id):
         app.logger.info('PUT request on service handler for ID {}'.format(id))
         if 'location' in request.json:
             DB[id]['location'] = request.json['location']
-        elif 'hours' in request.json:
+        if 'name' in request.json:
+            print("name")
+            DB[id]['name'] = request.json['name']
+        if 'hours' in request.json:
             DB[id]['hours'] = request.json['hours']
-        elif 'description' in request.json:
+        if 'description' in request.json:
             DB[id]['description'] = request.json['description']
+        print(DB[id])
+        print(request.json)
         saveDB(DB)
 
     try:
