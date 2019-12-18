@@ -2,6 +2,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import Markup
+from flask import redirect
+from flask import jsonify
 from json2html import *
 import json
 import requests
@@ -42,6 +44,22 @@ def changeService():
         return render_template("postService.html", ID=Markup(''),Method = Markup('POST'))
     else: #PUT
         return render_template("postService.html", ID=Markup('/'+id),Method = Markup('PUT'))
+@app.route('/serviceChangeRequest/<id>',methods = ['POST'])
+def changeServiceRequest(id):
+    if id == 'new':
+        id=""
+    else:
+        id='/'+id
+    data = jsonify()
+    if request.method == 'PUT':
+        data = request.json
+        r = requests.put(url=r_url, json=data)
+        data = r.status_code
+
+    elif request.method == 'POST':
+        data = request.json
+        r = requests.post(url=r_url, json=data)
+    return redirect(APIurl+"/serviceAdmin"+id, code=302)
 
 
 

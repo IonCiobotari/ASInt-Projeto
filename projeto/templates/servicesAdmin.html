@@ -18,11 +18,12 @@
 {% endfor %}
 
 <a href="/">Main</a>
-<form action="/postService" method="POST">
-<select>
+<form action="/serviceChange" method="post">
+<select name = "ID">
  {{Options}}
   <option value="new">Create new ID</option>
 </select>
+    <button type = "submit" value = "New Service">New Service!</button>
 </form>
 </body>
 </html>
