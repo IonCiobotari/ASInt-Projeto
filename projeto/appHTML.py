@@ -3,6 +3,8 @@ from flask import render_template
 from flask import request
 from flask import Markup
 from flask import redirect
+from flask import session
+from flask import url_for
 from json2html import *
 import json
 import requests
@@ -12,9 +14,15 @@ import os
 import pickle
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'OgyJj3f-Rp4pNckcw2Ztjw'
 #app.logger = logging.getLogger('defaultLogger')
 DB = {}
 APIurl = "http://127.0.0.1:6000/API/"
+
+MasterUser = "master"
+MasterPassword = "password"
+users = {'master': {'username' : "master", 'password':"password"}, 
+         'admin1': {'username' : "admin1", 'password':"password1"}}
 
 # general html page
 @app.route('/<path:path>', methods = ['GET', 'PUT', 'POST', 'DELETE'])
@@ -22,52 +30,76 @@ def default_page(path):
     url = APIurl + path
     path = path.split("/")
     data = ""
-    
-    if request.method == 'POST':
-        r = requests.post(url = url, json = request.form)
-    elif request.method == 'GET':
-        try:
-            if request.args['operation'] == 'PUT':
-                result = request.args
-                r = requests.put(url = url, json = result)
-                return redirect("http://127.0.0.1:6100/services/{}".format(path[-1]))
-            elif request.args['operation'] == 'DELETE':
-                r = requests.delete(url)
-                url = APIurl + path[0]
-                return redirect("http://127.0.0.1:6100/services")
-        except KeyError:
-            data += '<h2>An unexpected error ocurred</h2>'
-    
+
     r = requests.get(url)
     data += json2html.convert(json = r.json())
-    # if admin
-    if path[0] == "services":
-        if len(path) == 1:
-            data += '<h3>Create new service</h3><form action="/services" method="POST"><p>Name: <input type="text" name="name"></p><p>Location: <input type="text" name="location"></p><p>Hours: <input type="text" name="hours"></p><p>Description: <input type="text" name="description"></p><input type = "submit"></form>'
-        else:
-            data += '<h3>Update service</h3>'
-            data += '<form action="/services/{}" method="GET">'.format(path[-1])
-            data += '<p>Name: <input type="text" name="name"/></p>'
-            data += '<p>Location: <input type="text" name="location"/></p>'
-            data += '<p>Hours: <input type="text" name="hours"/></p>'
-            data += '<p>Description: <input type="text" name="description"/></p>'
-            data += '<p><input type="hidden" name="operation" value="PUT"/></p>'
-            data += '<input type = "Submit"/>'
-            data += '</form>'
-            data += '<h3>Delete service</h3><form action="/services/{}" method="GET"><input type = "hidden" name = "operation" value="DELETE"><input type = "submit"></form>'.format(path[-1])
-    # else
-    #data += '<href = "/loginAdmin>Login</href>'
-    
+
+    if not session.get("USERNAME") is None: # only admin are allowed to use post, put and delete methods
+        if request.method == 'POST':
+            r = requests.post(url = url, json = request.form)
+        elif request.method == 'GET':
+            if request.args != {}:
+                if request.args['operation'] == 'PUT':
+                    result = request.args
+                    r = requests.put(url = url, json = result)
+                    return redirect("http://127.0.0.1:6100/services/{}".format(path[-1]))
+                elif request.args['operation'] == 'DELETE':
+                    r = requests.delete(url)
+                    url = APIurl + path[0]
+                    return redirect("http://127.0.0.1:6100/services")
+        
+        if path[0] == "services":
+            if len(path) == 1:
+                data += '<h3>Create new service</h3><form action="/services" method="POST"><p>Name: <input type="text" name="name"></p><p>Location: <input type="text" name="location"></p><p>Hours: <input type="text" name="hours"></p><p>Description: <input type="text" name="description"></p><input type = "submit"></form>'
+            else:
+                data += '<h3>Update service</h3>'
+                data += '<form action="/services/{}" method="GET">'.format(path[-1])
+                data += '<p>Name: <input type="text" name="name"/></p>'
+                data += '<p>Location: <input type="text" name="location"/></p>'
+                data += '<p>Hours: <input type="text" name="hours"/></p>'
+                data += '<p>Description: <input type="text" name="description"/></p>'
+                data += '<p><input type="hidden" name="operation" value="PUT"/></p>'
+                data += '<input type = "Submit"/>'
+                data += '</form>'
+                data += '<h3>Delete service</h3><form action="/services/{}" method="GET"><input type = "hidden" name = "operation" value="DELETE"><input type = "submit"></form>'.format(path[-1])
+        data+= '<form action="/logoutAdmin"><input type="submit" value="Logout"/></form>'
+    else:
+        data += '<form action="/loginAdmin"><input type="submit" value="Login"/></form>'
+        
     
     return render_template("default.html", result = Markup(data))
 
 
-@app.route('/loginAdmin', methods=['GET', 'Post'])
+@app.route('/')
+def mainpage():
+    return render_template("mainPage.html")
+
+@app.route('/loginAdmin', methods=['GET','Post'])
 def loginAdmin():
-    if request.form == None:
-        return render_template("login.html")
-    #TODO do the adming login
-    return render_template("login.html")
+    data = ""
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+
+        if username in users:
+            if users[username]["password"] == password:
+                session["USERNAME"] = username
+                data = '<h2>Login successful</h2>'
+                data += '<a href="/logoutAdmin">Logout</a>'
+                return render_template("default.html", result = Markup(data))
+            else:
+                data = "<h2>Invalid password</h2>"
+        else:
+            data = "<h2>Invalid username</h2>"
+                
+
+    return render_template("login.html", result = Markup(data))
+
+@app.route('/logoutAdmin')
+def logoutAdmin():
+    session.pop("USERNAME", None)
+
+    return redirect(url_for('loginAdmin'))
   
 
 @app.route('/serviceAdmin',methods = ['GET'])
