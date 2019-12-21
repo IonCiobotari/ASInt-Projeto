@@ -19,7 +19,6 @@ def show_path_result(path):
     if url_args[0] in URL:
         # decode path
         r_url = URL[url_args[0]] + path
-        print(r_url)
         try:
             if request.method == 'GET':
                 r = requests.get(r_url)
@@ -38,9 +37,7 @@ def show_path_result(path):
         except requests.exceptions.InvalidURL:
             data = "Invalid url"
         except requests.exceptions.ConnectionError:
-            data = "Connection error"
-        except requests.exceptions.ConnectionError:
-            data = "Connection Error"
+            data = "Connection error with "+path
     else:
         data = "Invalid url"
 

@@ -16,23 +16,24 @@ import pickle
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'OgyJj3f-Rp4pNckcw2Ztjw'
 #app.logger = logging.getLogger('defaultLogger')
-DB = {}
-APIurl = "http://127.0.0.1:6000/API/"
 
-MasterUser = "master"
-MasterPassword = "password"
 users = {'master': {'username' : "master", 'password':"password"}, 
          'admin1': {'username' : "admin1", 'password':"password1"}}
+
+APIurl = "http://127.0.0.1:6000/API/"
 
 # general html page
 @app.route('/<path:path>', methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def default_page(path):
     url = APIurl + path
     path = path.split("/")
-    data = ""
 
-    r = requests.get(url)
-    data += json2html.convert(json = r.json())
+    try:
+        r = requests.get(url)
+        data = json2html.convert(json = r.json())
+    except requests.exceptions.ConnectionError:
+        data = '<h2>Connection error with proxy</h2>'
+        return render_template("default.html", result = Markup(data))
 
     if not session.get("USERNAME") is None: # only admin are allowed to use post, put and delete methods
         if request.method == 'POST':
@@ -49,9 +50,9 @@ def default_page(path):
                     return redirect("http://127.0.0.1:6100/services")
         
         if path[0] == "services":
-            if len(path) == 1:
+            if len(path) == 1: # /services
                 data += '<h3>Create new service</h3><form action="/services" method="POST"><p>Name: <input type="text" name="name"></p><p>Location: <input type="text" name="location"></p><p>Hours: <input type="text" name="hours"></p><p>Description: <input type="text" name="description"></p><input type = "submit"></form>'
-            else:
+            else: # /services/<id>
                 data += '<h3>Update service</h3>'
                 data += '<form action="/services/{}" method="GET">'.format(path[-1])
                 data += '<p>Name: <input type="text" name="name"/></p>'
@@ -73,6 +74,7 @@ def default_page(path):
 @app.route('/')
 def mainpage():
     return render_template("mainPage.html")
+
 
 @app.route('/loginAdmin', methods=['GET','Post'])
 def loginAdmin():
@@ -100,34 +102,12 @@ def logoutAdmin():
     session.pop("USERNAME", None)
 
     return redirect(url_for('loginAdmin'))
-  
-
-@app.route('/serviceAdmin',methods = ['GET'])
-def AdminService():
-    r = requests.get(APIurl+"services")
-    j = json.loads(r.text)
-    #TODO if admin allowed
-    #TODO generate list of available IDs and put them on the page
-    to_add = ""
-    for i in j:
-        to_add+='<option value ="{}" \>{}</option>\n'.format(i['ID'],i['ID'])
-    return render_template("servicesAdmin.html", Options = Markup(to_add))
-
-@app.route('/serviceChange',methods = ['POST'])
-def changeService():
-    id = request.form['ID']
-    if id =='new':#Post
-        return render_template("postService.html", ID=Markup(''),Method = Markup('POST'))
-    else: #PUT
-        return render_template("postService.html", ID=Markup('/'+id),Method = Markup('PUT'))
-
-
- 
 
 
 @app.errorhandler(404)
 def error_not_found(error):
-    return render_template("error_not_found.html"), 404
+    message = '<h2>Page not found</h2>'
+    return render_template("default.html", result = Markup(message)), 404
 
 
 if __name__ == '__main__':
@@ -144,21 +124,3 @@ if __name__ == '__main__':
         DB = {}
 
     app.run(debug = True, port=6100)
-
-    """
-    def jsontoHtml(json, h, html):
-    html = ""
-
-    if struct
-        for k in json.key:
-                html+="<h>"+jsontoHtml(json[k],h+1)+"</h>"
-
-    if array
-        html = " <h> "
-        for v in json:
-            html +=v
-    if valor
-        html = valor(json)
-
-    return html
-"""
