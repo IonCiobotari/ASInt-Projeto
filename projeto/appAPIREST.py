@@ -11,7 +11,7 @@ URL_services = "http://127.0.0.1:5100/"
 
 URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services}
 
-@app.route('/API/<path:path>', methods = ['GET', 'PUT', 'POST'])
+@app.route('/API/<path:path>', methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def show_path_result(path):
 
     url_args = path.split("/")
@@ -31,6 +31,9 @@ def show_path_result(path):
             elif request.method == 'POST':
                 data = request.json
                 r = requests.post(url = r_url, json = data)
+                data = r.status_code
+            elif request.method == 'DELETE':
+                r = requests.delete(r_url)
                 data = r.status_code
         except requests.exceptions.InvalidURL:
             data = "Invalid url"

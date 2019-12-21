@@ -66,25 +66,29 @@ def services():
 
         return jsonify(DB[-1])
 
-@app.route('/services/<int:id>', methods = ['GET', 'PUT'])
+@app.route('/services/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def service_id(id):
     if request.method == 'GET':
         app.logger.info('GET request on service handler for ID {}'.format(id))
         if DB == []:
             return jsonify("No services available")
     elif request.method == 'PUT':
-        app.logger.info('PUT request on service handler for ID {}'.format(id))
-        if 'location' in request.json:
-            DB[id]['location'] = request.json['location']
-        if 'name' in request.json:
-            print("name")
-            DB[id]['name'] = request.json['name']
-        if 'hours' in request.json:
-            DB[id]['hours'] = request.json['hours']
-        if 'description' in request.json:
-            DB[id]['description'] = request.json['description']
-        print(DB[id])
         print(request.json)
+        app.logger.info('PUT request on service handler for ID {}'.format(id))
+        if 'location' in request.json and request.json['location'] != "":
+            DB[id]['location'] = request.json['location']
+        if 'name' in request.json and request.json['name'] != "":
+            DB[id]['name'] = request.json['name']
+        if 'hours' in request.json and request.json['hours'] != "":
+            DB[id]['hours'] = request.json['hours']
+        if 'description' in request.json and request.json['description'] != "":
+            DB[id]['description'] = request.json['description']
+        saveDB(DB)
+    elif request.method == 'DELETE':
+        app.logger.info('DELETE request on service handler for ID {}'.format(id))
+        del DB[id]
+        for i in range(len(DB)):
+            DB[i]['ID'] = i
         saveDB(DB)
 
     try:
