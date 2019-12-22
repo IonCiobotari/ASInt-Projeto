@@ -27,10 +27,14 @@ APIurl = "http://127.0.0.1:6000/API/"
 def default_page(path):
     url = APIurl + path
     path = path.split("/")
+    if path[0] == "Admin":
+        del path[0]
 
     try:
         r = requests.get(url)
         data = json2html.convert(json = r.json())
+        if data == "":
+            data = "No informaiton available"
     except requests.exceptions.ConnectionError:
         data = '<h2>Connection error with proxy</h2>'
         return render_template("default.html", result = Markup(data))
@@ -64,8 +68,8 @@ def default_page(path):
                 data += '</form>'
                 data += '<h3>Delete service</h3><form action="/services/{}" method="GET"><input type = "hidden" name = "operation" value="DELETE"><input type = "submit"></form>'.format(path[-1])
         data+= '<form action="/logoutAdmin"><input type="submit" value="Logout"/></form>'
-    else:
-        data += '<form action="/loginAdmin"><input type="submit" value="Login"/></form>'
+    #else:
+        #data += '<form action="/loginAdmin"><input type="submit" value="Login"/></form>'
         
     
     return render_template("default.html", result = Markup(data))
@@ -93,7 +97,6 @@ def loginAdmin():
                 data = "<h2>Invalid password</h2>"
         else:
             data = "<h2>Invalid username</h2>"
-                
 
     return render_template("login.html", result = Markup(data))
 
@@ -102,6 +105,11 @@ def logoutAdmin():
     session.pop("USERNAME", None)
 
     return redirect(url_for('loginAdmin'))
+
+
+@app.route('/QRcode')
+def QRcode():
+    return render_template("qrcode.html")
 
 
 @app.errorhandler(404)
