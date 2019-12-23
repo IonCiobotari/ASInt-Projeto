@@ -21,6 +21,7 @@ users = {'master': {'username' : "master", 'password':"password"},
          'admin1': {'username' : "admin1", 'password':"password1"}}
 
 APIurl = "http://127.0.0.1:6000/API/"
+URL_log = "http://127.0.0.1:4000/log"
 
 client_id = "1695915081465958"
 redirect_uri = "http://127.0.0.1:6100/userAuth"
@@ -52,7 +53,8 @@ def mainpage():
 @app.route('/<path:path>')
 def default_page(path):
     url = APIurl + path
-
+    requests.post(url=URL_log, json={
+        'text': 'APPHTML recognized request from {}, method = {}'.format(request.remote_addr, request.method)})
     try:
         r = requests.get(url)
         data = json2html.convert(json = r.json())
@@ -73,6 +75,8 @@ def admin_page(path):
     if path[0] == "Admin":
         del path[0]
 
+    requests.post(url=URL_log, json={
+        'text': 'APPHTML Admin request from {}, method = {}'.format(request.remote_addr, request.method)})
     try:
         r = requests.get(url)
         data = json2html.convert(json = r.json())
@@ -130,12 +134,18 @@ def loginAdmin():
                 session["USERNAME"] = username
                 data = '<h2>Login successful</h2>'
                 data += '<a href="/logoutAdmin">Logout</a>'
+
+                requests.post(url=URL_log, json={
+                    'text': 'APPHTML Valid login from {}, method = {}'.format(request.remote_addr,
+                                                                                     request.method)})
                 return render_template("default.html", result = Markup(data))
             else:
                 data = "<h2>Invalid password</h2>"
         else:
             data = "<h2>Invalid username</h2>"
 
+        requests.post(url=URL_log, json={
+            'text': 'APPHTML INVALID login from {}, method = {}'.format(request.remote_addr, request.method)})
     return render_template("login.html", result = Markup(data))
 
 @app.route('/logoutAdmin')
@@ -217,8 +227,12 @@ def userAuthentication():
         s_code = randomStringDigits()
         session['Fenix'] = loginName
         FENIX_user[loginName] = {'username':loginName, 'name':r_info['name'], 'photo':r_info['photo'], 'secret_code':s_code, 'token':r_token['access_token']}
+        requests.post(url=URL_log, json={
+            'text': 'APPHTML Successful token request from {}, method = {}'.format(request.remote_addr, request.method)})
         return redirect('/Secret')
     else:
+        equests.post(url=URL_log, json={
+            'text': 'APPHTML Unsuccessful token request from {}, method = {}'.format(request.remote_addr, request.method)})
         return render_template("error_manager.html")
 
 
