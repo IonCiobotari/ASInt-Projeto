@@ -13,11 +13,9 @@ import requests
 import logging.config
 import os
 import pickle
-import fenixedu
+import random
+import string
 
-app = Flask(__name__)
-app.config["SECRET_KEY"] = 'OgyJj3f-Rp4pNckcw2Ztjw'
-#app.logger = logging.getLogger('defaultLogger')
 
 users = {'master': {'username' : "master", 'password':"password"}, 
          'admin1': {'username' : "admin1", 'password':"password1"}}
@@ -25,13 +23,30 @@ users = {'master': {'username' : "master", 'password':"password"},
 APIurl = "http://127.0.0.1:6000/API/"
 
 client_id = "1695915081465958"
-redirect_uri = "http://127.0.0.1:6100/Secret"
-client_secret = "JuVIEYUP21AHAGoXkNo5veg9pxqd4qJ9Pq81zgrjf6Mw9fMceyDIGUbroRx++8L64VDNtQ8Z8WkOSD4uqZnbDw=="
-base_url = "https://fenix.tecnico.ulisboa.pt/"
-#Fenixurl = "https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id={}&redirect_uri={}}".format(client_id, redirect_uri)
+redirect_uri = "http://127.0.0.1:6100/userAuth"
+client_secret = "JuVlEYUP21AHAGoXkNo5veg9pxqd4qJ9Pq81zgrjf6Mw9fMceyDIGUbroRx++8L64VDNtQ8Z8WkOSD4uqZnbDw=="
+fenixLoginpage= "https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=%s&redirect_uri=%s"
+fenixacesstokenpage = 'https://fenix.tecnico.ulisboa.pt/oauth/access_token'
 
-FENIXconfig = fenixedu.FenixEduConfiguration(client_id, redirect_uri, client_secret, base_url)
-FENIXclient = fenixedu.FenixEduClient(FENIXconfig)
+FENIX_user = {}
+
+app = Flask(__name__)
+app.config["SECRET_KEY"] = 'OgyJj3f-Rp4pNckcw2Ztjw'
+#app.logger = logging.getLogger('defaultLogger')
+
+
+
+def randomStringDigits(stringLength=6):
+    """Generate a random string of letters and digits """
+    lettersAndDigits = string.ascii_letters + string.digits
+    return ''.join(random.choice(lettersAndDigits) for i in range(stringLength))
+
+
+
+@app.route('/')
+def mainpage():
+    return render_template("mainPage.html")
+
 
 
 @app.route('/<path:path>')
@@ -102,10 +117,6 @@ def admin_page(path):
     return render_template("default.html", result = Markup(data))
 
 
-@app.route('/')
-def mainpage():
-    return render_template("mainPage.html")
-
 
 @app.route('/loginAdmin', methods=['GET','Post'])
 def loginAdmin():
@@ -139,18 +150,89 @@ def QRcode():
     return render_template("qrcode.html")
 
 
-@app.route('/Secret')
+@app.route('/Secret', methods=['GET', 'POST'])
 def Secret():
-    data = "todo"
+    if not session.get('Fenix') is None:
+        loginName = session.get('Fenix')
+        
+        if request.method == "POST":
+            if request.is_json:
+                req_code = request.json["code"]
+                print(req_code)
+                #return jsonify("it works??")
+                username = ""
+                name = ""
+                photo = ""
+                for i in FENIX_user.keys():
+                    if FENIX_user[i]['secret_code'] == req_code:
+                        username = FENIX_user[i]['username']
+                        name = FENIX_user[i]['name']
+                        photo = FENIX_user[i]['photo']
+                        break
+                
+                if username == "":
+                    data = "Invalid code"
+                else:
+                    data ='<h2>Requested user: {} - {}</h2>'.format(username, name)
+                    #data +="<img data:;base64,{}/>".format(photo)
 
+                return jsonify(data)
+            else:
+                return "Invalid json"
+
+        else:
+            try:
+                userToken = FENIX_user[loginName]['token']
+            except KeyError:
+                return redirect("/Secretlogout")
+
+            params = {'access_token': userToken}
+            resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params = params)
+            #print(resp.status_code)
+            if (resp.status_code == 200):
+                r_info = resp.json()
+                #print( r_info)
+                return render_template("secret.html", username=loginName, name=r_info['name'], code=FENIX_user[loginName]['secret_code'])
+            else:
+                return render_template("error_manager.html")
+    else:
+        redPage = fenixLoginpage % (client_id, redirect_uri)
+        return redirect(redPage)
+    
+
+
+@app.route('/userAuth')
+def userAuthentication():
+    code = request.args['code']
+
+    payload = {'client_id': client_id, 'client_secret': client_secret, 'redirect_uri' : redirect_uri, 'code' : code, 'grant_type': 'authorization_code'}
+    response = requests.post(fenixacesstokenpage, params = payload)
+    if(response.status_code == 200):
+        r_token = response.json()
+
+        params = {'access_token': r_token['access_token']}
+        resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params = params)
+        r_info = resp.json()
+        loginName = r_info['username']
+        s_code = randomStringDigits()
+        session['Fenix'] = loginName
+        FENIX_user[loginName] = {'username':loginName, 'name':r_info['name'], 'photo':r_info['photo'], 'secret_code':s_code, 'token':r_token['access_token']}
+        return redirect('/Secret')
+    else:
+        return render_template("error_manager.html")
+
+
+@app.route('/Secretlogout')
+def secret_logout():
     try:
-        code = request.args['code']
-    except KeyError:
-        url = FENIXclient.get_authentication_url()
-        return redirect(url)
-
-    return render_template("default.html", result=data)
-
+        del FENIX_user[session.get('Fenix')]
+    except Exception:
+        pass
+    try:
+        session.pop('Fenix', None)
+    except Exception:
+        pass
+    return redirect('/')
 
 @app.errorhandler(404)
 def error_not_found(error):
