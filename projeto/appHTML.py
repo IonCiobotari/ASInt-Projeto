@@ -28,10 +28,6 @@ client_secret = "JuVlEYUP21AHAGoXkNo5veg9pxqd4qJ9Pq81zgrjf6Mw9fMceyDIGUbroRx++8L
 fenixLoginpage= "https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=%s&redirect_uri=%s"
 fenixacesstokenpage = 'https://fenix.tecnico.ulisboa.pt/oauth/access_token'
 
-loginName = False
-userToken = None
-code = False
-
 FENIX_user = {}
 
 app = Flask(__name__)
@@ -154,25 +150,55 @@ def QRcode():
     return render_template("qrcode.html")
 
 
-@app.route('/Secret')
+@app.route('/Secret', methods=['GET', 'POST'])
 def Secret():
-    if session['Fenix'] is None:
-        print(session['Fenix'])
-        redPage = fenixLoginpage % (client_id, redirect_uri)
+    if not session.get('Fenix') is None:
+        loginName = session.get('Fenix')
+        
+        if request.method == "POST":
+            if request.is_json:
+                req_code = request.json["code"]
+                print(req_code)
+                #return jsonify("it works??")
+                username = ""
+                name = ""
+                photo = ""
+                for i in FENIX_user.keys():
+                    if FENIX_user[i]['secret_code'] == req_code:
+                        username = FENIX_user[i]['username']
+                        name = FENIX_user[i]['name']
+                        photo = FENIX_user[i]['photo']
+                        break
+                
+                if username == "":
+                    data = "Invalid code"
+                else:
+                    data ='<h2>Requested user: {} - {}</h2>'.format(username, name)
+                    #data +="<img data:;base64,{}/>".format(photo)
 
-        return redirect(redPage)
-    else:
-        print(session['Fenix'])
-        userToken = FENIX_user[session['Fenix']]['token']
-        params = {'access_token': userToken}
-        resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params = params)
-        #print(resp.status_code)
-        if (resp.status_code == 200):
-            r_info = resp.json()
-            print( r_info)
-            return render_template("secret.html", username=loginName, name=r_info['name'], code=FENIX_user[session['Fenix']['secret_code']])
+                return jsonify(data)
+            else:
+                return "Invalid json"
+
         else:
-            return render_template("error_manager.html")
+            try:
+                userToken = FENIX_user[loginName]['token']
+            except KeyError:
+                return redirect("/Secretlogout")
+
+            params = {'access_token': userToken}
+            resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params = params)
+            #print(resp.status_code)
+            if (resp.status_code == 200):
+                r_info = resp.json()
+                #print( r_info)
+                return render_template("secret.html", username=loginName, name=r_info['name'], code=FENIX_user[loginName]['secret_code'])
+            else:
+                return render_template("error_manager.html")
+    else:
+        redPage = fenixLoginpage % (client_id, redirect_uri)
+        return redirect(redPage)
+    
 
 
 @app.route('/userAuth')
@@ -187,10 +213,10 @@ def userAuthentication():
         params = {'access_token': r_token['access_token']}
         resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params = params)
         r_info = resp.json()
-        
+        loginName = r_info['username']
         s_code = randomStringDigits()
-        session["Fenix"] = loginName
-        FENIX_user[loginName] = {'name':r_info['name'], 'photo':r_info['photo'], 'secret_code':s_code, 'token':r_token['access_token']}
+        session['Fenix'] = loginName
+        FENIX_user[loginName] = {'username':loginName, 'name':r_info['name'], 'photo':r_info['photo'], 'secret_code':s_code, 'token':r_token['access_token']}
         return redirect('/Secret')
     else:
         return render_template("error_manager.html")
@@ -198,8 +224,14 @@ def userAuthentication():
 
 @app.route('/Secretlogout')
 def secret_logout():
-    del FENIX_user[session.get('Fenix')]
-    session.pop('Fenix', None)
+    try:
+        del FENIX_user[session.get('Fenix')]
+    except Exception:
+        pass
+    try:
+        session.pop('Fenix', None)
+    except Exception:
+        pass
     return redirect('/')
 
 @app.errorhandler(404)
