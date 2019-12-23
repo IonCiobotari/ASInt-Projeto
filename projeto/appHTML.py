@@ -100,18 +100,22 @@ def admin_page(path):
                     if request.args['operation'] == 'PUT':
                         result = request.args
                         r = requests.put(url = url, json = result)
-                        return redirect("http://127.0.0.1:6100/services/{}".format(path[-1]))
+                        return redirect("http://127.0.0.1:6100/Admin/services/{}".format(path[-1]))
                     elif request.args['operation'] == 'DELETE':
                         r = requests.delete(url)
                         url = APIurl + path[0]
-                        return redirect("http://127.0.0.1:6100/services")
+                        return redirect("http://127.0.0.1:6100/Admin/services")
         
         if path[0] == "services":
             if len(path) == 1: # /services
-                data += '<h3>Create new service</h3><form action="/services" method="POST"><p>Name: <input type="text" name="name"></p><p>Location: <input type="text" name="location"></p><p>Hours: <input type="text" name="hours"></p><p>Description: <input type="text" name="description"></p><input type = "submit"></form>'
+                data += '<h3>Create new service</h3><form action="/Admin/services" method="POST">'
+                data +='<p>Name: <input type="text" name="name"></p>'
+                data +='<p>Location: <input type="text" name="location"></p>'
+                data +='<p>Hours: <input type="text" name="hours"></p>'
+                data+='<p>Description: <input type="text" name="description"></p><input type = "submit"></form>'
             else: # /services/<id>
                 data += '<h3>Update service</h3>'
-                data += '<form action="/services/{}" method="GET">'.format(path[-1])
+                data += '<form action="/Admin/services/{}" method="GET">'.format(path[-1])
                 data += '<p>Name: <input type="text" name="name"/></p>'
                 data += '<p>Location: <input type="text" name="location"/></p>'
                 data += '<p>Hours: <input type="text" name="hours"/></p>'
@@ -119,7 +123,7 @@ def admin_page(path):
                 data += '<p><input type="hidden" name="operation" value="PUT"/></p>'
                 data += '<input type = "Submit"/>'
                 data += '</form>'
-                data += '<h3>Delete service</h3><form action="/services/{}" method="GET"><input type = "hidden" name = "operation" value="DELETE"><input type = "submit"></form>'.format(path[-1])
+                data += '<h3>Delete service</h3><form action="/Admin/services/{}" method="GET"><input type = "hidden" name = "operation" value="DELETE"><input type = "submit"></form>'.format(path[-1])
         data+= '<form action="/logoutAdmin"><input type="submit" value="Logout"/></form>'
     else:
         data += '<form action="/loginAdmin"><input type="submit" value="Login"/></form>'
@@ -263,12 +267,12 @@ def userAuthentication():
         session['Fenix'] = loginName
         FENIX_user[loginName] = {'username':loginName, 'name':r_info['name'], 'photo':r_info['photo'], 'secret_code':s_code, 'token':r_token['access_token']}
         USER_STACK[loginName] = None
-        #requests.post(url=URL_log, json={
-            #'text': 'APPHTML Successful token request from {}, method = {}'.format(request.remote_addr, request.method)})
+        requests.post(url=URL_log, json={
+            'text': 'APPHTML Successful token request from {}, method = {}'.format(request.remote_addr, request.method)})
         return redirect('/Secret')
     else:
-        #equests.post(url=URL_log, json={
-            #'text': 'APPHTML Unsuccessful token request from {}, method = {}'.format(request.remote_addr, request.method)})
+        requests.post(url=URL_log, json={
+            'text': 'APPHTML Unsuccessful token request from {}, method = {}'.format(request.remote_addr, request.method)})
         return render_template("error_manager.html")
 
 
