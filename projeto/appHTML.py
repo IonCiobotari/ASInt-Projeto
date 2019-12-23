@@ -53,6 +53,9 @@ def mainpage():
 
 @app.route('/<path:path>')
 def default_page(path):
+    if path == 'log' and session.get("USERNAME") is None:
+        return redirect('/loginAdmin')
+
     url = APIurl + path
     requests.post(url=URL_log, json={
         'text': 'APPHTML recognized request from {}, method = {}'.format(request.remote_addr, request.method)})
@@ -78,16 +81,18 @@ def admin_page(path):
 
     requests.post(url=URL_log, json={
         'text': 'APPHTML Admin request from {}, method = {}'.format(request.remote_addr, request.method)})
-    try:
-        r = requests.get(url)
-        data = json2html.convert(json = r.json())
-        if data == "":
-            data = "No informaiton available"
-    except requests.exceptions.ConnectionError:
-        data = '<h2>Connection error with proxy</h2>'
-        return render_template("default.html", result = Markup(data))
-
+    
     if not session.get("USERNAME") is None: # only admin are allowed to use post, put and delete methods
+        try:
+            r = requests.get(url)
+            data = json2html.convert(json = r.json())
+            if data == "":
+                data = "No informaiton available"
+        except requests.exceptions.ConnectionError:
+            data = '<h2>Connection error with proxy</h2>'
+            return render_template("default.html", result = Markup(data))
+
+
         if request.method == 'POST':
             r = requests.post(url = url, json = request.form)
         elif request.method == 'GET':
@@ -121,10 +126,11 @@ def admin_page(path):
                 data += '</form>'
                 data += '<h3>Delete service</h3><form action="/Admin/services/{}" method="GET"><input type = "hidden" name = "operation" value="DELETE"><input type = "submit"></form>'.format(path[-1])
         data+= '<form action="/logoutAdmin"><input type="submit" value="Logout"/></form>'
-    else:
-        data += '<form action="/loginAdmin"><input type="submit" value="Login"/></form>'
         
-    return render_template("default.html", result = Markup(data))
+        return render_template("default.html", result = Markup(data))
+    else:
+        return redirect('/loginAdmin')
+        
 
 
 
