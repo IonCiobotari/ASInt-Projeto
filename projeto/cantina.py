@@ -10,6 +10,8 @@ import logging.config
 
 app = Flask(__name__)
 
+URL_log = "http://127.0.0.1:4000/log"
+
 FENIX_CANTEEN_URL = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen"
 CACHE = {}
 app.logger = logging.getLogger('defaultLogger')
@@ -33,13 +35,16 @@ def canteen_week():
             r = requests.get(FENIX_CANTEEN_URL)
             save_CACHE(r.json())
             data = CACHE
-            app.logger.info('Uncached Request on Default canteen handler')
+            requests.post(url=URL_log, json={
+                'text': 'cantinaPY Uncached Request on Default canteen handler from remote {}'.format(request.remote_addr)})
+
         except requests.exceptions.InvalidURL:
-            app.logger.info('Invalid URL on default Canteen request')
+
             data = r.status_code
     else:
         data = CACHE
-        app.logger.info('Cached request on Canteen default handler')
+        requests.post(url=URL_log, json={
+            'text': 'cantinaPY cached Request on Default canteen handler from remote {}'.format(request.remote_addr)})
     return jsonify(data)
 
 @app.route('/canteen/<day>') # return lunch and dinner for a given day
@@ -49,7 +54,8 @@ def canteen_day(day):
     day = day.replace("-", "/") # day must come with dd-mm-yyyy format
     if day in CACHE.keys():
         data = CACHE[day]
-        app.logger.info('Cached request on Canteen Day handler for day: {}'.format(day))
+        requests.post(url=URL_log, json={
+            'text': 'cantinaPY cached Request on Default canteen handler from remote {} for day {}'.format(request.remote_addr,day)})
     else:
         try:
             r = requests.get(FENIX_CANTEEN_URL + "?day="+day)
@@ -60,9 +66,10 @@ def canteen_day(day):
                     if day in i.values():
                         data = {i['day']: i['meal']}
                         break
-                app.logger.info('Uncached request on Canteen Day handler for day: {}'.format(day))
+            requests.post(url=URL_log, json={
+                'text': 'cantinaPY uncached Request on Default canteen handler from remote {} for day {}'.format(
+                    request.remote_addr, day)})
         except requests.exceptions.InvalidURL:
-            app.logger.info('Invalid URL on Canteen Day handler for day: {}'.format(day))
             data = r.status_code    #changed to status_code
 
     return jsonify(data)

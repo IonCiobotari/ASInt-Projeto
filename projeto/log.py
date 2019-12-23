@@ -19,8 +19,9 @@ def logText():
             rel_path = "Logs/LogService.LOG"
             abs_file_path = os.path.join(script_dir, rel_path)
             with open(abs_file_path, 'a+') as file:
-                log_text = request.args.get('text')
-                file.write("{} -> {}\n".format(d,log_text))
+                #log_text = request.args.get('text')
+                log_text = request.json['text']
+                file.write("{} @ {} -> {}\n".format(d,request.remote_addr,log_text))
                 return "i did it"
         except Exception as ex:
             print("Woops something went wrong when logging|{}|{}".format(d,ex))

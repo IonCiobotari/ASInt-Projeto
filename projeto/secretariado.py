@@ -29,6 +29,7 @@ import log
 import os
 
 app = Flask(__name__)
+URL_log = "http://127.0.0.1:4000/log"
 app.logger = logging.getLogger('defaultLogger')
 DB = []
 
@@ -45,14 +46,15 @@ def saveDB(DB):
 
 @app.route('/services', methods = ['GET', 'POST'])
 def services():
+    r = requests.post(url=URL_log, json={
+        'text': 'secretariadoPY  Processing services request from remote {} with method = {}'.format(request.remote_addr,request.method)})
+
     if request.method == 'GET':
-        app.logger.info('GET request on default services handler')
         if DB == []:
             return jsonify("No services available")
         else:
             return jsonify(DB)
     elif request.method == 'POST':
-        app.logger.info('POST request on default services handler')
         service = {
             'ID': len(DB),
             'location': request.json['location'],
@@ -68,13 +70,14 @@ def services():
 
 @app.route('/services/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def service_id(id):
+    requests.post(url=URL_log, json={
+        'text': 'secretariadoPY  Processing services request with ID = {} from remote {} with method = {}'.format(id,request.remote_addr,request.method)})
+
     if request.method == 'GET':
-        app.logger.info('GET request on service handler for ID {}'.format(id))
         if DB == []:
             return jsonify("No services available")
     elif request.method == 'PUT':
         print(request.json)
-        app.logger.info('PUT request on service handler for ID {}'.format(id))
         if 'location' in request.json and request.json['location'] != "":
             DB[id]['location'] = request.json['location']
         if 'name' in request.json and request.json['name'] != "":
@@ -85,7 +88,6 @@ def service_id(id):
             DB[id]['description'] = request.json['description']
         saveDB(DB)
     elif request.method == 'DELETE':
-        app.logger.info('DELETE request on service handler for ID {}'.format(id))
         del DB[id]
         for i in range(len(DB)):
             DB[i]['ID'] = i

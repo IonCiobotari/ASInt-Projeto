@@ -8,8 +8,9 @@ app = Flask(__name__)
 URL_canteen = "http://127.0.0.1:5000/"
 URL_rooms = "http://127.0.0.1:5200/"
 URL_services = "http://127.0.0.1:5100/"
+URL_LOGs = "http://127.0.0.1:4000/log"
 
-URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services}
+URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services, 'log':URL_LOGs}
 
 @app.route('/API/<path:path>', methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def show_path_result(path):
@@ -19,6 +20,7 @@ def show_path_result(path):
     if url_args[0] in URL:
         # decode path
         r_url = URL[url_args[0]] + path
+        r = requests.post(url=URL['log'], json={'text': 'appAPIREST recognized request from {}, method = {}'.format(request.remote_addr,request.method)})
         try:
             if request.method == 'GET':
                 r = requests.get(r_url)
@@ -39,6 +41,7 @@ def show_path_result(path):
         except requests.exceptions.ConnectionError:
             data = "Connection error with "+path
     else:
+        r = requests.post(url=URL['log'], json={'text': 'appAPIREST UNrecognized request from {}, method = {}'.format(request.remote_addr,request.method)})
         data = "Invalid url"
 
     return jsonify(data)

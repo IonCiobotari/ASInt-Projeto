@@ -19,6 +19,7 @@ import logging.config
 
 app = Flask(__name__)
 
+URL_log = "http://127.0.0.1:4000/log"
 app.logger = logging.getLogger('defaultLogger')
 
 
@@ -35,7 +36,9 @@ def salas_list():
     print(r.status_code)
     data = r.json()
     print(data)
-    app.logger.info('{} - Processing default salas request'.format(request.remote_addr))
+    requests.post(url=URL_log, json={
+        'text': 'salasPY  Processing salas request with ID = {} from remote {}'.format(ID,request.remote_addr)})
+
     return jsonify(r.json())
 
 
@@ -50,7 +53,9 @@ def salas_ID(ID):
     print(r.status_code)
     data = r.json()
     print(data)
-    app.logger.info('{} - Processing salas request with ID = {}'.format(request.remote_addr, ID))
+    requests.post(url=URL_log, json={
+        'text': 'salasPY  Processing salas request with ID = {} from remote {}'.format(ID,request.remote_addr)})
+
     return jsonify(r.json())
 
 
@@ -71,7 +76,10 @@ def salas_dayID(ID, day):
         if event['day'] == day:
             vect.append(event)
     data['events']= vect
-    app.logger.info('{} - Processing salas request with ID = {} and day = {}'.format(request.remote_addr, ID, day))
+
+    requests.post(url=URL_log, json={
+        'text': 'salasPY  Processing salas request with ID = {} and day = {} from remote {}'.format( ID, day,request.remote_addr)})
+
     #return jsonify(r.json())  # TODO return only ocupation for the currrent day and not for the current week like fenix API returns
     return jsonify(data)
 
