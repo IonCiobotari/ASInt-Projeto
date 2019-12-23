@@ -61,6 +61,7 @@ def canteen_day(day):
             if r.status_code != 200:
                 data = r.status_code
             else:
+                data = {}
                 for i in r.json():
                     if day in i.values():
                         data = {i['day']: i['meal']}

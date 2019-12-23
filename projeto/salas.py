@@ -60,7 +60,7 @@ def salas_dayID(ID, day):
     for event in data['events']:
         if event['day'] == day:
             vect.append(event)
-    data['events']= vect
+    data['events'] = vect
 
     requests.post(url=URL_log, json={
         'text': 'salasPY  Processing salas request with ID = {} and day = {} from remote {}'.format( ID, day,request.remote_addr)})
