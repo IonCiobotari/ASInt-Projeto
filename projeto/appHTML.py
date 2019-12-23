@@ -54,10 +54,8 @@ def mainpage():
 @app.route('/<path:path>')
 def default_page(path):
     url = APIurl + path
-    print(url)
     requests.post(url=URL_log, json={
         'text': 'APPHTML recognized request from {}, method = {}'.format(request.remote_addr, request.method)})
-    print("here")
     try:
         r = requests.get(url)
         data = json2html.convert(json = r.json())
@@ -65,10 +63,8 @@ def default_page(path):
         if data == "":
             data = "No informaiton available"
     except requests.exceptions.ConnectionError:
-        print("except")
         data = '<h2>Connection error with proxy</h2>'
         return render_template("default.html", result = Markup(data))
-    print("done")
     return render_template("default.html", result=Markup(data))
 
 

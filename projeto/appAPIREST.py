@@ -8,7 +8,7 @@ app = Flask(__name__)
 URL_canteen = "http://127.0.0.1:5000/"
 URL_rooms = "http://127.0.0.1:5200/"
 URL_services = "http://127.0.0.1:5100/"
-URL_LOGs = "http://127.0.0.1:4000/log"
+URL_LOGs = "http://127.0.0.1:4000/"
 
 URL = {'canteen':URL_canteen, 'rooms':URL_rooms, 'services':URL_services, 'log':URL_LOGs}
 

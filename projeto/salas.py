@@ -13,6 +13,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
+from flask import redirect
 import log
 import requests
 import logging.config
@@ -56,11 +57,14 @@ def salas_dayID(ID, day):
     except requests.exceptions.InvalidURL:
         return jsonify("Fenix service is down")
     data = r.json()
-    vect = []
-    for event in data['events']:
-        if event['day'] == day:
-            vect.append(event)
-    data['events'] = vect
+    if 'events' in data.keys():
+        vect = []
+        for event in data['events']:
+            if event['day'] == day:
+                vect.append(event)
+        data['events'] = vect
+    else:
+        return redirect('/rooms/{}'.format(ID))
 
     requests.post(url=URL_log, json={
         'text': 'salasPY  Processing salas request with ID = {} and day = {} from remote {}'.format( ID, day,request.remote_addr)})
