@@ -156,10 +156,12 @@ def Secret():
         loginName = session.get('Fenix')
         
         if request.method == "POST":
-            if request.is_json:
-                req_code = request.json["code"]
-                print(req_code)
-                #return jsonify("it works??")
+            if(request.is_json):
+                try:
+                    req_code = request.json["code"]
+                except KeyError:
+                    return jsonify("No code inserted")
+
                 username = ""
                 name = ""
                 photo = ""
@@ -167,18 +169,18 @@ def Secret():
                     if FENIX_user[i]['secret_code'] == req_code:
                         username = FENIX_user[i]['username']
                         name = FENIX_user[i]['name']
-                        photo = FENIX_user[i]['photo']
+                        photo = FENIX_user[i]['photo']['data']
                         break
-                
+                    
                 if username == "":
                     data = "Invalid code"
                 else:
                     data ='<h2>Requested user: {} - {}</h2>'.format(username, name)
-                    #data +="<img data:;base64,{}/>".format(photo)
+                    data +='<div><img src="data:image/png;base64,{}"/></div>'.format(photo)
 
                 return jsonify(data)
             else:
-                return "Invalid json"
+                return "ERROR"
 
         else:
             try:
@@ -188,10 +190,9 @@ def Secret():
 
             params = {'access_token': userToken}
             resp = requests.get("https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person", params = params)
-            #print(resp.status_code)
             if (resp.status_code == 200):
                 r_info = resp.json()
-                #print( r_info)
+                #photo = FENIX_user[loginName]['photo']['data']
                 return render_template("secret.html", username=loginName, name=r_info['name'], code=FENIX_user[loginName]['secret_code'])
             else:
                 return render_template("error_manager.html")
