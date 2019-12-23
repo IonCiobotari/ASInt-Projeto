@@ -12,6 +12,7 @@ import requests
 import logging.config
 import os
 import pickle
+import fenixedu
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'OgyJj3f-Rp4pNckcw2Ztjw'
@@ -21,6 +22,16 @@ users = {'master': {'username' : "master", 'password':"password"},
          'admin1': {'username' : "admin1", 'password':"password1"}}
 
 APIurl = "http://127.0.0.1:6000/API/"
+
+client_id = "1695915081465958"
+redirect_uri = "http://127.0.0.1:6100/Secret"
+client_secret = "JuVIEYUP21AHAGoXkNo5veg9pxqd4qJ9Pq81zgrjf6Mw9fMceyDIGUbroRx++8L64VDNtQ8Z8WkOSD4uqZnbDw=="
+base_url = "https://fenix.tecnico.ulisboa.pt/"
+#Fenixurl = "https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id={}&redirect_uri={}}".format(client_id, redirect_uri)
+
+FENIXconfig = fenixedu.FenixEduConfiguration(client_id, redirect_uri, client_secret, base_url)
+FENIXclient = fenixedu.FenixEduClient(FENIXconfig)
+
 
 @app.route('/<path:path>')
 def default_page(path):
@@ -125,6 +136,19 @@ def logoutAdmin():
 @app.route('/QRcode')
 def QRcode():
     return render_template("qrcode.html")
+
+
+@app.route('/Secret')
+def Secret():
+    data = "todo"
+
+    try:
+        code = request.args['code']
+    except KeyError:
+        url = FENIXclient.get_authentication_url()
+        return redirect(url)
+
+    return render_template("default.html", result=data)
 
 
 @app.errorhandler(404)
