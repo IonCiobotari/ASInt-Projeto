@@ -15,3 +15,73 @@
 2019-12-23 22:56:22.215296 @ 127.0.0.1 -> cantinaPY uncached Request on Default canteen handler from remote 127.0.0.1 for day 23/12/2019
 2019-12-23 22:56:58.246893 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 and day = 10/12/2019 from remote 127.0.0.1
 2019-12-23 22:57:04.405944 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 from remote 127.0.0.1
+2019-12-23 23:05:32.652376 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:05:32.666339 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:05:32.780044 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131360897 from remote 127.0.0.1
+2019-12-23 23:06:14.984398 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:14.995368 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:15.146027 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 from remote 127.0.0.1
+2019-12-23 23:06:25.031171 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:25.043138 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:25.222503 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 and day = 23/12/2019 from remote 127.0.0.1
+2019-12-23 23:06:31.538268 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:31.552235 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:31.714327 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 and day = 20/12/2019 from remote 127.0.0.1
+2019-12-23 23:06:48.098704 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:06:48.108676 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:19.692334 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:19.705296 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:19.971582 @ 127.0.0.1 -> cantinaPY uncached Request on Default canteen handler from remote 127.0.0.1 for day 20/12/2019
+2019-12-23 23:07:28.800384 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:28.814345 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:29.364195 @ 127.0.0.1 -> cantinaPY uncached Request on Default canteen handler from remote 127.0.0.1 for day 25/12/2019
+2019-12-23 23:07:34.788280 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:34.799250 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:07:35.028980 @ 127.0.0.1 -> cantinaPY Uncached Request on Default canteen handler from remote 127.0.0.1
+2019-12-23 23:08:14.765311 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:08:14.777311 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:08:14.891993 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131360897 from remote 127.0.0.1
+2019-12-23 23:09:13.458114 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:09:13.471075 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:09:13.711606 @ 127.0.0.1 -> cantinaPY Uncached Request on Default canteen handler from remote 127.0.0.1
+2019-12-23 23:09:36.716079 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:09:36.730083 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:09:36.942642 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 from remote 127.0.0.1
+2019-12-23 23:11:22.008837 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:11:22.019795 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:11:22.205736 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131363667 from remote 127.0.0.1
+2019-12-23 23:11:33.925156 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:11:33.937143 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:10.396337 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:10.407272 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:10.646777 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131360897 from remote 127.0.0.1
+2019-12-23 23:12:14.846342 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:14.854321 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:15.033056 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131360897 from remote 127.0.0.1
+2019-12-23 23:12:18.920360 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:18.931166 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:12:19.125823 @ 127.0.0.1 -> salasPY  Processing salas request with ID = 2448131360897 from remote 127.0.0.1
+2019-12-23 23:16:11.486902 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:16:11.497872 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:17:41.496789 @ 127.0.0.1 -> appAPIREST recognized request from 127.0.0.1, method = GET
+2019-12-23 23:18:42.330413 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:25:22.400540 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:25:47.650768 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:26:31.091719 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:26:53.855932 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:26:53.887848 @ 127.0.0.1 -> secretariadoPY  Processing services request from remote 127.0.0.1 with method = GET
+2019-12-23 23:26:57.563404 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:28:40.938781 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:29:29.321160 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:30:46.539353 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:30:55.630162 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:31:01.334847 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:31:07.122561 @ 127.0.0.1 -> APPHTML Valid login from 127.0.0.1, method = POST
+2019-12-23 23:31:12.503761 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:31:43.265232 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:31:46.835695 @ 127.0.0.1 -> APPHTML Admin request from 127.0.0.1, method = GET
+2019-12-23 23:31:46.852672 @ 127.0.0.1 -> secretariadoPY  Processing services request from remote 127.0.0.1 with method = GET
+2019-12-23 23:31:53.625430 @ 127.0.0.1 -> APPHTML Valid login from 127.0.0.1, method = POST
+2019-12-23 23:31:58.787584 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:32:06.283797 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
+2019-12-23 23:32:13.371629 @ 127.0.0.1 -> APPHTML recognized request from 127.0.0.1, method = GET
