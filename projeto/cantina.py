@@ -14,7 +14,6 @@ URL_log = "http://127.0.0.1:4000/log"
 
 FENIX_CANTEEN_URL = "https://fenix.tecnico.ulisboa.pt/api/fenix/v1/canteen"
 CACHE = {}
-app.logger = logging.getLogger('defaultLogger')
 
 # save new cache information
 def save_CACHE(data):

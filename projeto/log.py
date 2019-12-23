@@ -6,10 +6,6 @@ import logging.config
 
 app = Flask(__name__)
 
-logging.config.fileConfig('logging.cfg')
-app.logger = logging.getLogger('defaultLogger')
-
-
 @app.route('/log', methods=['GET','POST'])
 def logText():
     if request.method == 'POST':
